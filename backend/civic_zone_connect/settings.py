@@ -148,6 +148,7 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:7532",
     "http://localhost:4173",
     "http://127.0.0.1:4173",
+    "https://civic-track.vercel.app",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
@@ -161,6 +162,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:7532",
     "http://localhost:4173",
     "http://127.0.0.1:4173",
+    "https://civic-track.vercel.app",
 ]
 
 # Additional CORS settings for better compatibility
