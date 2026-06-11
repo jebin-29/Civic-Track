@@ -1,5 +1,5 @@
 // API Service for Civic Zone Connect
-const API_BASE_URL = 'http://127.0.0.1:8000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
 // Types
 export interface User {
@@ -91,25 +91,25 @@ const apiRequest = async (
     const response = await fetch(url, config);
 
     if (!response.ok) {
-  const errorData = await response.json().catch(() => ({}));
-  let message = "";
-  if (typeof errorData === "object") {
-    message = errorData.message 
-      || errorData.error 
-      || errorData.detail
-      || (errorData.non_field_errors && errorData.non_field_errors[0])
-      || "";
-    if (!message) {
-      for (const key of Object.keys(errorData)) {
-        const val = errorData[key];
-        if (Array.isArray(val) && val.length > 0) { message = val[0]; break; }
-        if (typeof val === "string") { message = val; break; }
+      const errorData = await response.json().catch(() => ({}));
+      let message = "";
+      if (typeof errorData === "object") {
+        message = errorData.message
+          || errorData.error
+          || errorData.detail
+          || (errorData.non_field_errors && errorData.non_field_errors[0])
+          || "";
+        if (!message) {
+          for (const key of Object.keys(errorData)) {
+            const val = errorData[key];
+            if (Array.isArray(val) && val.length > 0) { message = val[0]; break; }
+            if (typeof val === "string") { message = val; break; }
+          }
+        }
       }
+      if (!message) message = `HTTP ${response.status}`;
+      throw { message, status: response.status, errors: errorData } as ApiError;
     }
-  }
-  if (!message) message = `HTTP ${response.status}`;
-  throw { message, status: response.status, errors: errorData } as ApiError;
-}
 
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
@@ -221,28 +221,28 @@ export const issuesAPI = {
   },
 
   updateIssue: async (id: string, formData: FormData): Promise<Issue> => {
-  const token = getAuthToken();
+    const token = getAuthToken();
 
-  const response = await fetch(`${API_BASE_URL}/issues/${id}/`, {
-    method: "PATCH",
-    headers: {
-      Authorization: token ? `Token ${token}` : "",
-      // ❗ DO NOT set Content-Type manually for FormData
-    },
-    body: formData,
-  });
+    const response = await fetch(`${API_BASE_URL}/issues/${id}/`, {
+      method: "PATCH",
+      headers: {
+        Authorization: token ? `Token ${token}` : "",
+        // ❗ DO NOT set Content-Type manually for FormData
+      },
+      body: formData,
+    });
 
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw {
-      message: errorData.message || errorData.error || `HTTP ${response.status}`,
-      status: response.status,
-      errors: errorData,
-    } as ApiError;
-  }
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw {
+        message: errorData.message || errorData.error || `HTTP ${response.status}`,
+        status: response.status,
+        errors: errorData,
+      } as ApiError;
+    }
 
-  return response.json();
-},
+    return response.json();
+  },
 
 
   getMyIssues: async (): Promise<Issue[]> => {
@@ -321,7 +321,7 @@ export const adminAPI = {
       method: "POST",
     });
   },
-  
+
 
   verifyUser: async (id: number) => {
     return apiRequest(`/admin/users/${id}/verify/`, {
@@ -330,10 +330,10 @@ export const adminAPI = {
   },
 
   hideIssue: async (id: string) => {
-  return apiRequest(`/admin/issues/${id}/toggle-visibility/`, {
-    method: "POST",
-  });
-},
+    return apiRequest(`/admin/issues/${id}/toggle-visibility/`, {
+      method: "POST",
+    });
+  },
 };
 
 export default {
