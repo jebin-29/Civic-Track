@@ -1,0 +1,263 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* CivicTrack Design System - Civic engagement platform colors */
+
+@layer base {
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 222 15% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 15% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 15% 15%;
+
+    /* Civic blue - trustworthy and professional */
+    --primary: 220 85% 35%;
+    --primary-foreground: 0 0% 98%;
+
+    /* Soft gray for secondary actions */
+    --secondary: 220 10% 96%;
+    --secondary-foreground: 220 15% 25%;
+
+    --muted: 220 10% 96%;
+    --muted-foreground: 220 10% 50%;
+
+    /* Community green - positive actions */
+    --accent: 142 75% 40%;
+    --accent-foreground: 0 0% 98%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 220 15% 90%;
+    --input: 220 15% 95%;
+    --ring: 220 85% 35%;
+
+    /* CivicTrack specific status colors */
+    --civic-reported: 15 90% 55%;
+    --civic-reported-bg: 15 100% 97%;
+    --civic-progress: 45 95% 50%;
+    --civic-progress-bg: 45 100% 95%;
+    --civic-resolved: 142 75% 40%;
+    --civic-resolved-bg: 142 50% 95%;
+
+    /* Category colors */
+    --category-roads: 220 85% 35%;
+    --category-lighting: 45 95% 50%;
+    --category-water: 200 90% 50%;
+    --category-cleanliness: 142 75% 40%;
+    --category-safety: 15 90% 55%;
+    --category-obstruction: 280 60% 50%;
+
+    --radius: 0.5rem;
+
+    /* Animation and transition variables */
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dark {
+    --background: 222 15% 5%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 15% 7%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 15% 7%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 220 85% 50%;
+    --primary-foreground: 222 15% 5%;
+
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 220 15% 15%;
+    --muted-foreground: 220 15% 65%;
+
+    --accent: 142 75% 45%;
+    --accent-foreground: 222 15% 5%;
+
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 15% 20%;
+    --input: 220 15% 20%;
+    --ring: 220 85% 50%;
+
+    /* Dark mode status colors */
+    --civic-reported: 15 85% 60%;
+    --civic-reported-bg: 15 50% 10%;
+    --civic-progress: 45 90% 55%;
+    --civic-progress-bg: 45 50% 10%;
+    --civic-resolved: 142 70% 45%;
+    --civic-resolved-bg: 142 30% 10%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@layer utilities {
+  /* Text truncation utilities for issue cards */
+  .line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Status badge variants */
+  .badge-reported {
+    @apply bg-red-100 text-red-800 border-red-200;
+  }
+
+  .badge-progress {
+    @apply bg-yellow-100 text-yellow-800 border-yellow-200;
+  }
+
+  .badge-resolved {
+    @apply bg-green-100 text-green-800 border-green-200;
+  }
+
+  /* Map container styles */
+  .map-container {
+    @apply rounded-lg overflow-hidden border;
+  }
+
+  /* Photo upload styles */
+  .photo-upload-zone {
+    @apply border-2 border-dashed border-border rounded-lg p-6 text-center transition-all duration-200;
+  }
+
+  .photo-upload-zone:hover {
+    @apply border-primary/50 bg-primary/5;
+  }
+
+  .photo-upload-zone.dragover {
+    @apply border-primary bg-primary/10;
+  }
+
+  /* Location picker styles */
+  .location-status {
+    @apply flex items-center gap-2 text-sm;
+  }
+
+  .location-status.success {
+    @apply text-green-600 bg-green-50 border border-green-200 rounded-lg p-3;
+  }
+
+  .location-status.error {
+    @apply text-red-600 bg-red-50 border border-red-200 rounded-lg p-3;
+  }
+
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Custom scrollbar */
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground)) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground));
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.8);
+  }
+}
+
+/* Toast positioning for map view */
+.toast-viewport {
+  pointer-events: none;
+}
+
+.toast-viewport > * {
+  pointer-events: auto;
+}
+
+/* Ensure toast appears above map but doesn't interfere with map controls */
+[data-radix-toast-viewport] {
+  z-index: 9999 !important;
+}
+
+/* Custom toast positioning for map view */
+.map-toast {
+  position: fixed !important;
+  top: 1rem !important;
+  right: 1rem !important;
+  z-index: 10000 !important;
+  max-width: 400px !important;
+  background: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
