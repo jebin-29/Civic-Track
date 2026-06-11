@@ -31,11 +31,12 @@ from .serializers import (
     IssueAssignmentSerializer,
 )
 from django.contrib.auth import get_user_model
+import requests as http_requests
 # from google import genai
 # from google.genai import types
 # import json
 # from PIL import Image
-from inference_sdk import InferenceHTTPClient
+#from inference_sdk import InferenceHTTPClient
 from django.conf import settings
 from .models import Issue
 import os
@@ -44,10 +45,7 @@ User = get_user_model()
 
 # gemini_client = genai.Client(api_key="AIzaSyBEf7_GRt-203p4mYSw9h-tn1c8F69JVxU")
 
-#rf_client = InferenceHTTPClient(
-    #api_url="https://serverless.roboflow.com",
-    #api_key="3O5Kwl6qF8yz6wPUaVN9"
-#)
+
 
 # ── KNOWN HIGH-PRIORITY LOCATIONS (Coimbatore) ──────────────────────
 HIGH_PRIORITY_LOCATIONS = [
@@ -65,6 +63,26 @@ HIGH_PRIORITY_LOCATIONS = [
     {"name": "Collectorate",         "lat": 11.0168, "lng": 76.9558},
     {"name": "Coimbatore Railway",   "lat": 11.0000, "lng": 76.9694},
 ]
+
+def run_roboflow_workflow(image_path: str) -> list:
+    """Call Roboflow serverless API directly — no heavy SDK needed."""
+    try:
+        with open(image_path, "rb") as f:
+            img_b64 = base64.b64encode(f.read()).decode("utf-8")
+
+        resp = http_requests.post(
+            "https://serverless.roboflow.com/jebin-g72td/detect-count-and-visualize",
+            params={"api_key": os.environ.get("ROBOFLOW_API_KEY", "3O5Kwl6qF8yz6wPUaVN9")},
+            json={"image": {"type": "base64", "value": img_b64}},
+            timeout=30
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        return data.get("predictions", {}).get("predictions", [])
+    except Exception as e:
+        print("❌ Roboflow HTTP error:", e)
+        return []
+
 
 def is_near_critical_location(lat, lng, radius_km=1.5):
     """Check if issue is within radius_km of any critical location"""
@@ -300,23 +318,10 @@ class IssueCreateView(APIView):
             issue = serializer.save(reported_by=request.user)
 
             try:
-                rf_client = InferenceHTTPClient(
-                    api_url="https://serverless.roboflow.com",
-                    api_key="3O5Kwl6qF8yz6wPUaVN9"
-                )
                 primary_photo = issue.photos.filter(is_primary=True).first()
                 if primary_photo and primary_photo.image:
                     image_path = primary_photo.image.path
-                    result = rf_client.run_workflow(
-                        workspace_name="jebin-g72td",
-                        workflow_id="detect-count-and-visualize",
-                        images={"image": image_path},
-                        use_cache=True
-                    )
-                    print("Roboflow result:", result)
-                    predictions = []
-                    if result and len(result) > 0:
-                        predictions = result[0].get("predictions", {}).get("predictions", [])
+                    predictions = run_roboflow_workflow(image_path)
                     if predictions:
                         top_pred = predictions[0]
                         ai_class = top_pred.get("class", "General Issue")
