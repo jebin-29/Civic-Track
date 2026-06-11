@@ -44,10 +44,10 @@ User = get_user_model()
 
 # gemini_client = genai.Client(api_key="AIzaSyBEf7_GRt-203p4mYSw9h-tn1c8F69JVxU")
 
-rf_client = InferenceHTTPClient(
-    api_url="https://serverless.roboflow.com",
-    api_key="3O5Kwl6qF8yz6wPUaVN9"
-)
+#rf_client = InferenceHTTPClient(
+    #api_url="https://serverless.roboflow.com",
+    #api_key="3O5Kwl6qF8yz6wPUaVN9"
+#)
 
 # ── KNOWN HIGH-PRIORITY LOCATIONS (Coimbatore) ──────────────────────
 HIGH_PRIORITY_LOCATIONS = [
@@ -300,6 +300,10 @@ class IssueCreateView(APIView):
             issue = serializer.save(reported_by=request.user)
 
             try:
+                rf_client = InferenceHTTPClient(
+                    api_url="https://serverless.roboflow.com",
+                    api_key="3O5Kwl6qF8yz6wPUaVN9"
+                )
                 primary_photo = issue.photos.filter(is_primary=True).first()
                 if primary_photo and primary_photo.image:
                     image_path = primary_photo.image.path
